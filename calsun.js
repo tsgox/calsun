@@ -137,9 +137,13 @@ function render() {
         start.getDate() + w * 7 + i,
       );
       const k = keyOf(dt.getFullYear(), dt.getMonth(), dt.getDate());
-      const evs = suhangOnly
-        ? byDate[k]?.filter((e) => e.suhang) || []
-        : byDate[k] || [];
+
+      //수행모드인 경우 수행이 있는 일정만 표시, 수행모드가 아닌 경우 모든 일정 표시
+      // const evs = suhangOnly
+      //   ? byDate[k]?.filter((e) => e.suhang) || []
+      //   : byDate[k] || [];
+      const evs = byDate[k]?.filter((e) => !suhangOnly || e.suhang) || [];
+
       const hol = suhangOnly ? undefined : HOLIDAYS[k];
       const cls = [
         dt.getMonth() !== viewM ? "other" : "",
@@ -298,12 +302,8 @@ $("today").onclick = () => {
   render();
 };
 
+// 수행만 보기 모드 체크박스
 $("perform").onclick = (e) => {
-  // if (suhangOnly === false) {
-  //   suhangOnly = true;
-  // } else {
-  //   suhangOnly = false;
-  // }
   suhangOnly = e.target.checked;
   render();
 };
