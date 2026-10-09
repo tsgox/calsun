@@ -6,6 +6,7 @@
   --line: #d3d7de;
   --head: #eceef1;
   --accent: #36a3dc;
+  --accent2: #d40808;
   --red: #e5484d;
   --panel: #f2f3f5;
   --card: #ffffff;
@@ -26,6 +27,8 @@
     --panel: #1e2024;
     --card: #26282d;
     --pop-border: #6a6d73;
+    --accent: #e9ffdb;
+    --accent2: #ace1af;
     --shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
   }
 }
@@ -39,6 +42,8 @@
   --panel: #1e2024;
   --card: #26282d;
   --pop-border: #6a6d73;
+  --accent: #e9ffdb;
+  --accent2: #ace1af;
   --shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 html {
@@ -356,4 +361,17 @@ input[type="file"] {
   font-size: 13px;
   font-weight: 700;
   color: var(--accent);
+}
+.ev.suhang::before,
+.p-item.suhang::before {
+  background: var(--accent2);
+}
+.ev.suhang span,
+.p-item.suhang .title {
+  color: var(--accent2);
+  font-weight: 700;
+}
+.p-item.suhang .kyosi {
+  color: var(--accent2);
+  border-color: var(--accent2);
 }

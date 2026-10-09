@@ -88,6 +88,7 @@ function loadEvents(list) {
       title: ev.title ?? "",
       descr: (ev.descr ?? "").trim(),
       prepa: Array.isArray(ev.prepa) ? ev.prepa : [],
+      suhang: ev.suhang === true,
     });
   }
   /* 교시 없는 일정(종일) 먼저, 그 다음 교시 순 */
@@ -108,7 +109,7 @@ function dateLabel(k) {
 }
 
 function itemHTML(e) {
-  return `<div class="p-item">
+  return `<div class="p-item${e.suhang ? " suhang" : ""}">
     ${e.kyosi !== null ? `<span class="kyosi">${esc(e.kyosi)}교시</span>` : ""}
     ${e.subj ? `<span class="subj">${esc(e.subj)}</span>` : ""}
     <span class="title">${esc(e.title)}</span>
@@ -148,7 +149,10 @@ function render() {
         .join(" ");
       const shown = evs
         .slice(0, 3)
-        .map((e) => `<div class="ev"><span>${esc(e.title)}</span></div>`)
+        .map(
+          (e) =>
+            `<div class="ev${e.suhang ? " suhang" : ""}"><span>${esc(e.title)}</span></div>`,
+        )
         .join("");
       const more =
         evs.length > 3 ? `<div class="more">+${evs.length - 3}개</div>` : "";
@@ -322,9 +326,8 @@ $("file").addEventListener("change", (e) => {
   }
   if (data) {
     const bad = loadEvents(data);
-    // $("status").textContent =
-    //   `database.csv에서 일정 ${data.length - bad}개 불러옴` +
-    //   (bad ? `, 날짜 형식 오류 ${bad}개 제외` : "");
+    $("status").innerHTML =
+      `<u><a href="https://youtu.be/dQw4w9WgXcQ">10320作</a></u>`;
   } else {
     loadEvents(FALLBACK_EVENTS);
     $("status").textContent = "database.csv를 찾지 못해 빈 일정으로 시작함";

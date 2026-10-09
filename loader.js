@@ -54,6 +54,7 @@ export function csvToEvents(text) {
         .split(/[;|]/)
         .map((s) => s.trim())
         .filter(Boolean),
+      suhang: get("suhang").toUpperCase() === "Y",
     };
   });
 }
