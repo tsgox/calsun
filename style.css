@@ -7,6 +7,7 @@
   --head: #eceef1;
   --accent: #36a3dc;
   --accent2: #d40808;
+  --accent3: #d40808;
   --red: #e5484d;
   --panel: #f2f3f5;
   --card: #ffffff;
@@ -33,17 +34,18 @@
   }
 }
 :root[data-theme="dark"] {
-  --bg: #17181b;
+  --bg: #23262e;
   --fg: #e4e5e7;
   --muted: #62666d;
   --sub: #9a9ea5;
   --line: #33363c;
-  --head: #24262b;
+  --head: #3b4152;
   --panel: #1e2024;
   --card: #26282d;
   --pop-border: #6a6d73;
   --accent: #e9ffdb;
   --accent2: #ace1af;
+  --accent3: #d40808;
   --shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 html {
@@ -123,6 +125,11 @@ body {
 }
 .btn:hover {
   background: var(--head);
+}
+#perform {
+  background: var(--accent3);
+  color: #eee;
+  font-weight: 700;
 }
 button:focus-visible,
 td:focus-visible {
@@ -271,7 +278,7 @@ td.today .num {
 }
 .p-item {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 8px;
   padding: 6px 0;
   font-size: 14px;
@@ -286,7 +293,8 @@ td.today .num {
   height: 7px;
   background: var(--accent);
   flex: none;
-  align-self: center;
+  margin-top: 7px;
+  align-self: flex-start;
 }
 .kyosi {
   flex: none;
@@ -374,4 +382,70 @@ input[type="file"] {
 .p-item.suhang .kyosi {
   color: var(--accent2);
   border-color: var(--accent2);
+}
+
+.onoff-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#perform + label {
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  border-radius: 30px;
+  background-color: #d0d0d0;
+  position: relative;
+  transition: background-color 0.3s;
+}
+input[type="checkbox"] {
+  position: absolute;
+  left: -100%;
+}
+#perform + label:before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--bg);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 7.5px;
+  right: inherit;
+  /* box-shadow: 1px 3px 3px rgba(0, 0, 0, 0.2); */
+  filter: drop-shadow(1px 3px 3px rgba(0, 0, 0, 0.5));
+  transition: all 0.3s;
+}
+#perform:checked + label {
+  background-color: var(--accent);
+}
+#perform:checked + label:before {
+  left: calc(100% - 28px);
+}
+.onoff-label {
+  color: var(--accent2);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.onoff-label:hover {
+  cursor: pointer;
+}
+
+#today {
+  color: var(--bg);
+  background: var(--sub);
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+#today:hover {
+  opacity: 0.8;
+  color: #fff;
+}
+
+.link {
+  color: var(--fg);
 }

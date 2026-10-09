@@ -60,6 +60,7 @@ let now = new Date();
 let viewY = now.getFullYear(),
   viewM = now.getMonth();
 let pinned = false;
+let suhangOnly = false; // 수행만 보기 모드
 
 /* "26.10.19" / "2026.10.19" / "2026-10-19" 모두 허용 */
 function parseDate(s) {
@@ -136,8 +137,10 @@ function render() {
         start.getDate() + w * 7 + i,
       );
       const k = keyOf(dt.getFullYear(), dt.getMonth(), dt.getDate());
-      const evs = byDate[k] || [];
-      const hol = HOLIDAYS[k];
+      const evs = suhangOnly
+        ? byDate[k]?.filter((e) => e.suhang) || []
+        : byDate[k] || [];
+      const hol = suhangOnly ? undefined : HOLIDAYS[k];
       const cls = [
         dt.getMonth() !== viewM ? "other" : "",
         i === 0 ? "sun" : "",
@@ -173,6 +176,7 @@ function renderDetail() {
   const keys = Object.keys(byDate)
     .filter((k) => k.startsWith(prefix))
     .sort();
+
   if (!keys.length) {
     $("detailList").innerHTML =
       `<div class="empty">이 달에 등록된 일정이 없다.</div>`;
@@ -180,8 +184,9 @@ function renderDetail() {
   }
   $("detailList").innerHTML = keys
     .map((k) => {
-      const list = byDate[k];
-      const pr = prepaOf(list);
+      //수행모드인 경우 수행이 있는 일정만 표시, 수행모드가 아닌 경우 모든 일정 표시
+      const list = byDate[k].filter((e) => !suhangOnly || e.suhang);
+      const pr = !suhangOnly ? prepaOf(list) : [];
       return `<div class="d-day">
       <div class="d-head">${dateLabel(k)}</div>
       <div class="d-body">
@@ -196,10 +201,10 @@ function renderDetail() {
 /* ---------- 팝업 ---------- */
 function showPopup(td) {
   const k = td.dataset.key;
-  const list = byDate[k] || [];
-  const hol = HOLIDAYS[k];
+  const list = byDate[k]?.filter((e) => !suhangOnly || e.suhang) || [];
+  const hol = !suhangOnly && HOLIDAYS[k];
   if (!list.length && !hol) return;
-  const pr = prepaOf(list);
+  const pr = !suhangOnly ? prepaOf(list) : [];
   $("popBody").innerHTML = `
     <div class="p-date">${dateLabel(k)}</div>
     ${hol ? `<div class="p-hol">${esc(hol)}</div>` : ""}
@@ -293,28 +298,16 @@ $("today").onclick = () => {
   render();
 };
 
-/* ---------- JSON 파일 직접 불러오기 ---------- */
-$("file").addEventListener("change", (e) => {
-  const f = e.target.files[0];
-  if (!f) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = csvToEvents(reader.result);
-      const bad = loadEvents(data);
-      $("status").textContent =
-        `${f.name}: 일정 ${data.length - bad}개 불러옴` +
-        (bad ? `, 날짜 형식 오류 ${bad}개 제외` : "");
-      render();
-    } catch (err) {
-      $("status").textContent = `${f.name}을 읽지 못했다: ${err.message}`;
-    }
-  };
-  reader.readAsText(f, "utf-8");
-  e.target.value = "";
-});
+$("perform").onclick = (e) => {
+  // if (suhangOnly === false) {
+  //   suhangOnly = true;
+  // } else {
+  //   suhangOnly = false;
+  // }
+  suhangOnly = e.target.checked;
+  render();
+};
 
-/* ---------- 시작: 같은 폴더의 events.json 우선, 없으면 기본 데이터 ---------- */
 /* ---------- 시작: 같은 폴더의 database.csv 우선, 없으면 기본 데이터 ---------- */
 (async function init() {
   let data = null;
@@ -327,7 +320,7 @@ $("file").addEventListener("change", (e) => {
   if (data) {
     const bad = loadEvents(data);
     $("status").innerHTML =
-      `<u><a href="https://youtu.be/dQw4w9WgXcQ">10320作</a></u>`;
+      `<u><a class="link" href="https://youtu.be/dQw4w9WgXcQ">10320作</a></u>`;
   } else {
     loadEvents(FALLBACK_EVENTS);
     $("status").textContent = "database.csv를 찾지 못해 빈 일정으로 시작함";
